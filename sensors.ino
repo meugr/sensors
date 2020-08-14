@@ -18,16 +18,20 @@ byte z19_cmd[9] = {0xFF,0x01,0x86,0x00,0x00,0x00,0x00,0x00,0x79};
 // byte z19_off_abc[9] = {0xFF,0x01,0x79,0x00,0x00,0x00,0x00,0x00,0x86};
 unsigned char z19_response[9];
 
+int redPin = 9;
+int greenPin = 10;
+int bluePin = 11;
+
 void setup() {
-  Serial.begin(DEBUG_SERIAL_BAUD);
   espSerial.begin(ESP_SERIAL_BAUD);
   z19Serial.begin(Z19_SERIAL_BAUD);
-  while(!Serial) {}
   Wire.begin();
   bme.begin();
-  Serial.println("Wait 10sec z19b...");
-  delay(10 * 1000);
   //z19Serial.write(z19_off_abc, 9); uncomment for disable autocalibrate
+
+  pinMode(redPin, OUTPUT);
+  pinMode(greenPin, OUTPUT);
+  pinMode(bluePin, OUTPUT);
 }
 
 void loop() {
@@ -38,15 +42,13 @@ void loop() {
   sendData(res);
   
   if (needReset) {
-    Serial.println("Restart controller...");
     void(* reset) (void) = 0;
     reset();
   }
   delay(10000);
 }
 
-String getZ19Data()
-{
+String getZ19Data() {
   z19Serial.write(z19_cmd, 9);
   memset(z19_response, 0, 9);
   z19Serial.readBytes(z19_response, 9);
@@ -68,14 +70,13 @@ String getZ19Data()
   }
 }
 
-String getBME280Data()
-{
+String getBME280Data() {
   float temp(NAN), hum(NAN), pres(NAN);
   
-//  BME280::TempUnit tempUnit(BME280::TempUnit_Celsius);
-//  BME280::PresUnit presUnit(BME280::PresUnit_Pa);
+  BME280::TempUnit tempUnit(BME280::TempUnit_Celsius);
+  BME280::PresUnit presUnit(BME280::PresUnit_torr);
   
-  bme.read(pres, temp, hum); //, tempUnit, presUnit);
+  bme.read(pres, temp, hum, tempUnit, presUnit);
   
   String res =  String(temp) + ";" + String(hum) + ";" + String(pres);
   
@@ -88,4 +89,11 @@ void sendData(String payload) {
   espSerial.println("AT+CIPSEND=" + String(payload.length()));
   delay(300);
   espSerial.println(payload);
+}
+
+void setColor(byte red, byte green, byte blue) {
+  analogWrite(redPin, red);
+  analogWrite(greenPin, green);
+  analogWrite(bluePin, blue);
+
 }
