@@ -8,7 +8,7 @@
 
 BME280I2C bme; // BME SDA -> A4, SCL -> A5
 SoftwareSerial z19Serial(A0, A1); // Z19 A0 -> TX, A1 -> RX
-SoftwareSerial espSerial(A2, A3); // ESP01 A2 -> TX, A3 -> RX
+SoftwareSerial espSerial(A3, A2); // ESP01 A2 -> RX, A3 -> TX
 
 const int port = 5000;
 const String host = "\"192.168.1.100\"";
