@@ -18,20 +18,12 @@ byte z19_cmd[9] = {0xFF,0x01,0x86,0x00,0x00,0x00,0x00,0x00,0x79};
 // byte z19_off_abc[9] = {0xFF,0x01,0x79,0x00,0x00,0x00,0x00,0x00,0x86};
 unsigned char z19_response[9];
 
-int redPin = 6;
-int greenPin = 9;
-int bluePin = 10;
-
 void setup() {
   espSerial.begin(ESP_SERIAL_BAUD);
   z19Serial.begin(Z19_SERIAL_BAUD);
   Wire.begin();
   bme.begin();
   //z19Serial.write(z19_off_abc, 9); uncomment for disable autocalibrate
-
-  pinMode(redPin, OUTPUT);
-  pinMode(greenPin, OUTPUT);
-  pinMode(bluePin, OUTPUT);
 }
 
 void loop() {
@@ -89,11 +81,4 @@ void sendData(String payload) {
   espSerial.println("AT+CIPSEND=" + String(payload.length()));
   delay(300);
   espSerial.println(payload);
-}
-
-void setColor(byte red, byte green, byte blue) {
-  analogWrite(redPin, red);
-  analogWrite(greenPin, green);
-  analogWrite(bluePin, blue);
-
 }
