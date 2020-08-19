@@ -11,7 +11,7 @@ SoftwareSerial z19Serial(A0, A1); // Z19 A0 -> TX, A1 -> RX
 SoftwareSerial espSerial(A3, A2); // ESP01 A2 -> RX, A3 -> TX
 
 const int port = 5000;
-const String host = "\"192.168.1.100\"";  // replace to your server IP
+const String host = "192.168.1.100";  // replace to your server IP
 bool needReset = false;
 
 byte z19_cmd[9] = {0xFF,0x01,0x86,0x00,0x00,0x00,0x00,0x00,0x79};
@@ -32,7 +32,7 @@ void loop() {
   delay(1000);
   res += ";" + getBME280Data();
   sendData(res);
-  
+
   if (needReset) {
     void(* reset) (void) = 0;
     reset();
@@ -64,21 +64,24 @@ String getZ19Data() {
 
 String getBME280Data() {
   float temp(NAN), hum(NAN), pres(NAN);
-  
+
   BME280::TempUnit tempUnit(BME280::TempUnit_Celsius);
   BME280::PresUnit presUnit(BME280::PresUnit_torr);
-  
+
   bme.read(pres, temp, hum, tempUnit, presUnit);
-  
+
   String res =  String(temp) + ";" + String(hum) + ";" + String(pres);
-  
+
   return res;
 }
 
 void sendData(String payload) {
-  espSerial.println("AT+CIPSTART=\"TCP\"," + host + "," + String(port));
+  String HTTPhead = "POST /sensors HTTP/1.1\r\nHost:" + host + ":" + String(port) +
+  "\r\nContent-Type: application/json\r\nContent-Length: " + String(payload.length()) + "\r\n\r\n";
+  String msg = HTTPhead + payload;
+  espSerial.println("AT+CIPSTART=\"TCP\",\"" + host + "\"," + String(port));
   delay(300);
-  espSerial.println("AT+CIPSEND=" + String(payload.length()));
+  espSerial.println("AT+CIPSEND=" + String(msg.length()));
   delay(300);
-  espSerial.println(payload);
+  espSerial.println(msg);
 }
