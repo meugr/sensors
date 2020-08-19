@@ -11,7 +11,7 @@ SoftwareSerial z19Serial(A0, A1); // Z19 A0 -> TX, A1 -> RX
 SoftwareSerial espSerial(A3, A2); // ESP01 A2 -> RX, A3 -> TX
 
 const int port = 5000;
-const String host = "\"192.168.1.100\"";
+const String host = "\"192.168.1.100\"";  // replace to your server IP
 bool needReset = false;
 
 byte z19_cmd[9] = {0xFF,0x01,0x86,0x00,0x00,0x00,0x00,0x00,0x79};
