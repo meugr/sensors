@@ -77,7 +77,7 @@ String getBME280Data() {
 
 void sendData(String payload) {
   String HTTPhead = "POST /sensors HTTP/1.1\r\nHost:" + host + ":" + String(port) +
-  "\r\nContent-Type: application/json\r\nContent-Length: " + String(payload.length()) + "\r\n\r\n";
+  "\r\nContent-Type: text/plain\r\nContent-Length: " + String(payload.length()) + "\r\n\r\n";
   String msg = HTTPhead + payload;
   espSerial.println("AT+CIPSTART=\"TCP\",\"" + host + "\"," + String(port));
   delay(300);
