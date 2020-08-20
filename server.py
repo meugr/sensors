@@ -1,20 +1,41 @@
-"""
-Simple TCP listener
-"""
+import tornado.web
+import tornado.ioloop
+import time
 
-import socket
+from config import Config
 
-host = "192.168.1.100"
-port = 5000
-print('Start listener')
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.bind((host, port))
-s.listen()
-print(f'Listen {host}:{port}')
-while 1:
-    print('Waiting connect...')
-    conn, client_addr = s.accept()
-    print(f'Start connect with {client_addr[0]}:{client_addr[1]}')
-    incom_msg = conn.recv(1024).decode().rstrip('\n')
-    print(f'INCOME: {incom_msg}')
-    conn.close()
+config = Config()
+last = ""
+
+
+# noinspection PyAbstractClass
+class SensorDataHandler(tornado.web.RequestHandler):
+    async def post(self):
+        content = self.request.body.decode()
+        last = content
+        with open(config.csv_file, 'a') as f:
+            f.write(f'{int(time.time())};{content}\n')
+
+
+# noinspection PyAbstractClass
+class LastHandler(tornado.web.RequestHandler):
+    async def get(self):
+        self.write("<H1>Последние показания:</H1>")
+        if last:
+            self.write(last)
+        else:
+            with open(config.csv_file) as f:
+                self.write(f.readlines()[-1])
+
+
+def run():
+    application = tornado.web.Application([
+        (r"/session", SensorDataHandler),
+        (r"/now", LastHandler),
+    ])
+    application.listen(config.listen_port)
+    tornado.ioloop.IOLoop.current().start()
+
+
+if __name__ == "__main__":
+    run()
