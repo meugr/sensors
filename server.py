@@ -25,7 +25,7 @@ class Database:
     @classmethod
     def writelines(cls, lines: List[str]):
         with open(config.csv_file, 'a') as f:
-            f.writelines(lines)
+            f.writelines(map(lambda line: line + '\n', lines))
 
 
 class DataStorage:
