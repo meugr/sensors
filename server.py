@@ -73,7 +73,7 @@ class DataStorage:
         Последнее значение - get_data(-1)
         :return:
         """
-        return cls._storage.get[start: end]
+        return cls._storage.get()[start: end]
 
 
 class SensorsData:
