@@ -2,7 +2,9 @@ import tornado.web
 import tornado.ioloop
 import time
 
+from typing import List
 from collections import deque
+from itertools import islice
 
 from config import Config
 
@@ -14,6 +16,16 @@ class Database:
     Класс для работы с базой измерений.
     Перенести сюда логику работы с csv, наружу прокинуть интерфейсы
     """
+
+    @classmethod
+    def readlines(cls, size) -> List[str]:
+        with open(config.csv_file) as f:
+            return f.readlines()[-size:]
+
+    @classmethod
+    def writelines(cls, lines: List[str]):
+        with open(config.csv_file, 'a') as f:
+            f.writelines(lines)
 
 
 class DataStorage:
@@ -27,12 +39,10 @@ class DataStorage:
 
     @classmethod
     def init(cls):
-        with open(config.csv_file) as f:
-            cls._storage: deque = deque([], maxlen=config.storage_size)
+        cls._storage: deque = deque([], maxlen=config.storage_size)
 
-            for data in f.readlines()[-config.storage_size:]:
-                data = data.rstrip("\n")
-                cls._storage.append(SensorsData(data))
+        for data in Database.readlines(config.storage_size):
+            cls._storage.append(SensorsData(data))
 
     @classmethod
     def add_data(cls, data: str):
@@ -42,17 +52,16 @@ class DataStorage:
         """
         data = f'{int(time.time())};{data}'
         cls._storage.append(SensorsData(data))
-        with open(config.csv_file, 'a') as f:
-            f.write(f'{data}\n')
+        Database.writelines([data])
 
     @classmethod
-    def get_data(cls, start=None, end=None) -> 'SensorsData':
+    def get_data(cls, start=None, end=None) -> List['SensorsData']:
         """
         Возвращаем данные в интервале [start:end]
         Последнее значение - get_data(-1)
         :return:
         """
-        return cls._storage[start:end]
+        return list(islice(cls._storage, start, end))
 
 
 class SensorsData:
@@ -70,7 +79,7 @@ class SensorDataHandler(tornado.web.RequestHandler):
 # noinspection PyAbstractClass
 class LastHandler(tornado.web.RequestHandler):
     async def get(self):
-        data = DataStorage.get_data(-1)
+        data = DataStorage.get_data(-1)[0]
         self.write("<H1>Последние показания:</H1>")
         self.write(f"CO2: {data.co2}\n")
         self.write(f"°C: {data.temp}\n")
