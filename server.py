@@ -93,10 +93,10 @@ class LastHandler(tornado.web.RequestHandler):
     async def get(self):
         data = DataStorage.get_data(-1)[0]
         self.write("<H1>Последние показания:</H1>")
-        self.write(f"CO2: {data.co2}\n")
-        self.write(f"°C: {data.temp}\n")
-        self.write(f"Влажность: {data.hum}\n")
-        self.write(f"Давление: {data.press}\n")
+        self.write(f"CO2: {data.co2}<br>")
+        self.write(f"°C: {data.temp}<br>")
+        self.write(f"Влажность: {data.hum}<br>")
+        self.write(f"Давление: {data.press}<br>")
 
 
 def run():
