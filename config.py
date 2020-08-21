@@ -7,6 +7,7 @@ class Config:
 
     listen_port: int
     csv_file: str
+    storage_size: int
 
     def __init__(self):
         with open(self._CONFPATH) as file:
