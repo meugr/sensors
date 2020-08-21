@@ -1,9 +1,10 @@
 import time
 
-from typing import  List
+from typing import List
 
 from utils import Deque
 from database import Database
+
 
 class SensorsData:
     def __init__(self, payload: str):

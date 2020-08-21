@@ -1,7 +1,8 @@
-from typing import  List
+from typing import List
 from config import Config
 
 config = Config()
+
 
 class Database:
     """

@@ -1,5 +1,6 @@
 from typing import List
 
+
 class Deque:
     def __init__(self, data, maxlen):
         self._data: List = data
