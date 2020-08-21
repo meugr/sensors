@@ -3,12 +3,24 @@ import tornado.ioloop
 import time
 
 from typing import List
-from collections import deque
-from itertools import islice
 
 from config import Config
 
 config = Config()
+
+
+class Deque:
+    def __init__(self, data, maxlen):
+        self._data: List = data
+        self._limit: int = maxlen
+
+    def get(self):
+        return self._data
+
+    def append(self, value):
+        if len(self._data) >= self._limit:
+            self._data.pop(0)
+        self._data.append(value)
 
 
 class Database:
@@ -35,11 +47,11 @@ class DataStorage:
 
     """
 
-    _storage: deque
+    _storage: Deque
 
     @classmethod
     def init(cls):
-        cls._storage: deque = deque([], maxlen=config.storage_size)
+        cls._storage: Deque = Deque([], maxlen=config.storage_size)
 
         for data in Database.readlines(config.storage_size):
             cls._storage.append(SensorsData(data))
@@ -61,7 +73,7 @@ class DataStorage:
         Последнее значение - get_data(-1)
         :return:
         """
-        return list(islice(cls._storage, start, end))
+        return cls._storage.get[start: end]
 
 
 class SensorsData:
