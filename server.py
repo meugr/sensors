@@ -15,8 +15,10 @@ class SensorDataHandler(tornado.web.RequestHandler):
 # noinspection PyAbstractClass
 class LastHandler(tornado.web.RequestHandler):
     async def get(self):
-        data = DataStorage.get_data(-1)[0]
-        await self.render("html/index.html", title="My title", data=data)
+        data = DataStorage.get_data(-1)
+        old_data = DataStorage.get_data(end=-1)
+        print(len(old_data))
+        await self.render("html/index.html", title="My title", data=data[0], old_data=old_data)
 
 
 def run():

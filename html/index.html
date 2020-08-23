@@ -1,19 +1,31 @@
 <h1>Текущие показания</h1>
 <table>
     <tr>
-        <td>CO2</td>
+        <td>CO2, ppm</td>
         <td>{{ data.co2 }}</td>
     </tr>
     <tr>
-        <td>TEMP</td>
+        <td>T, C</td>
         <td>{{ data.temp }}</td>
     </tr>
     <tr>
-        <td>ВЛАЖНОСТЬ</td>
+        <td>H2O, %</td>
         <td>{{ data.hum }}</td>
     </tr>
     <tr>
-        <td>ДАВЛЕНИЕ</td>
+        <td>P, mm</td>
         <td>{{ data.press }}</td>
     </tr>
+</table>
+<br>
+<br>
+<table border="1" cellpadding="5">
+    {% for i in old_data %}
+    <tr>
+        <td>{{ i.co2 }}</td>
+        <td>{{ i.temp }}</td>
+        <td>{{ i.hum }}</td>
+        <td>{{ i.press }}</td>
+    </tr>
+    {% end %}
 </table>
