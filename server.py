@@ -17,7 +17,7 @@ class LastHandler(tornado.web.RequestHandler):
     async def get(self):
         data = DataStorage.get_data(-1)
         old_data = DataStorage.get_data(end=-1)
-        await self.render("html/index.html", title="My title", data=data[0], old_data=old_data)
+        await self.render("html/index.html", title="My title", data=data[0], old_data=old_data[::-1])
 
 
 def run():
