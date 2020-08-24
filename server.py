@@ -25,7 +25,7 @@ def run():
     DataStorage.init(config.storage_size)  # TODO check init
 
     application = tornado.web.Application([
-        (r"/session", SensorDataHandler),
+        (r"/sensors", SensorDataHandler),
         (r"/", LastHandler),
     ])
     application.listen(config.listen_port)
