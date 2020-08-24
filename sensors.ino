@@ -11,7 +11,7 @@ SoftwareSerial z19Serial(A0, A1); // Z19 A0 -> TX, A1 -> RX
 SoftwareSerial espSerial(A3, A2); // ESP01 A2 -> RX, A3 -> TX
 
 const int port = 5000;
-const String host = "192.168.1.100";  // replace to your server IP
+const String host = "192.168.1.130";  // replace to your server IP
 bool needReset = false;
 
 byte z19_cmd[9] = {0xFF,0x01,0x86,0x00,0x00,0x00,0x00,0x00,0x79};
@@ -29,15 +29,15 @@ void setup() {
 void loop() {
   String res = "";
   res = getZ19Data();
-  delay(1000);
+  delay(500);
   res += ";" + getBME280Data();
-  sendData(res);
 
   if (needReset) {
     void(* reset) (void) = 0;
     reset();
   }
-  delay(10000);
+  sendData(res);
+  delay(9000);
 }
 
 String getZ19Data() {
@@ -80,8 +80,8 @@ void sendData(String payload) {
   "\r\nContent-Type: text/plain\r\nContent-Length: " + String(payload.length()) + "\r\n\r\n";
   String msg = HTTPhead + payload;
   espSerial.println("AT+CIPSTART=\"TCP\",\"" + host + "\"," + String(port));
-  delay(300);
+  delay(250);
   espSerial.println("AT+CIPSEND=" + String(msg.length()));
-  delay(300);
+  delay(250);
   espSerial.println(msg);
 }

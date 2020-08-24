@@ -41,4 +41,4 @@ class DataStorage:
         Возвращаем данные в интервале [start:end]
         Последнее значение - get_data(-1)
         """
-        return cls._storage.get()[start: end]
+        return cls._storage.get()[start: end]  # TODO обрабатывать IndexError

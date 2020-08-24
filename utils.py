@@ -1,12 +1,9 @@
-from typing import List
-
-
 class Deque:
-    def __init__(self, data, maxlen):
-        self._data: List = data
+    def __init__(self, data: list, maxlen: int):
+        self._data: list = data
         self._limit: int = maxlen
 
-    def get(self):
+    def get(self) -> list:
         return self._data
 
     def append(self, value):
