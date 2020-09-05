@@ -21,19 +21,15 @@ class LastHandler(tornado.web.RequestHandler):
         min_max_list = []
         for interval in splitlist(data, 10):
             interval_co2 = [int(i.co2) for i in interval]
-            print(interval_co2)
 
             avg_list.append([interval[0].time, sum(interval_co2) // len(interval_co2)])
             min_max_list.append([interval[0].time, min(interval_co2), max(interval_co2)])
 
-        print(avg_list)
         await self.render("html/index.html", title="My title",
-                          data=data[0],
+                          data=data[-1],
                           old_data=data[-1::-1],  # данные для графика
                           averages=avg_list,
                           ranges=min_max_list
-
-
                           )
 
 
