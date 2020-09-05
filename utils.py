@@ -10,3 +10,7 @@ class Deque:
         if len(self._data) >= self._limit:
             self._data.pop(0)
         self._data.append(value)
+
+def splitlist(data: list, chunksize: int):
+    for i in range(0, len(data), chunksize):
+        yield data[i:i + chunksize]

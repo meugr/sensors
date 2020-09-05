@@ -1,5 +1,5 @@
 {
   "listen_port": 5000,
   "csv_file": "data.csv",
-  "storage_size": 7
+  "storage_size": 500
 }
