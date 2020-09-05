@@ -27,13 +27,16 @@ class DataStorage:
             cls._storage.append(SensorsData(data))
 
     @classmethod
-    def add_data(cls, data: str):
+    def add_data(cls, data_list: list):
         """
         Пишем в базу и добавляем в DataStorage
         """
-        data = f'{int(time.time())};{data}'
-        cls._storage.append(SensorsData(data))
-        Database.writelines([data])
+        to_db = []
+        for data in data_list:
+            data = f'{int(time.time())};{data}'
+            cls._storage.append(SensorsData(data))
+            to_db.append(data)
+        Database.writelines(to_db)
 
     @classmethod
     def get_data(cls, start=None, end=None) -> List['SensorsData']:

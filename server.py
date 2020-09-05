@@ -9,7 +9,7 @@ from utils import splitlist
 # noinspection PyAbstractClass
 class SensorDataHandler(tornado.web.RequestHandler):
     async def post(self):
-        content = self.request.body.decode()
+        content: list = self.request.body.decode().split('\n')
         await DataStorage.add_data(content)
 
 
