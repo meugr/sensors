@@ -24,8 +24,8 @@ class LastHandler(tornado.web.RequestHandler):
         for interval in splitlist(data, 6 * 15):  # интервалы по 15 минут
             interval_co2 = [int(i.co2) for i in interval]
 
-            avg_list.append([int(interval[0].time) + (60 * 60 * config.timezone), sum(interval_co2) // len(interval_co2)])
-            min_max_list.append([int(interval[0].time) + (60 * 60 * config.timezone), min(interval_co2), max(interval_co2)])
+            avg_list.append([int(interval[len(interval) // 2].time) + (60 * 60 * config.timezone), sum(interval_co2) // len(interval_co2)])
+            min_max_list.append([int(interval[len(interval) // 2].time) + (60 * 60 * config.timezone), min(interval_co2), max(interval_co2)])
 
         await self.render("index.html", title="My title",
                           data=data[-1],
