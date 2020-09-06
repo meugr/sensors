@@ -1,3 +1,5 @@
+import os
+
 import tornado.web
 import tornado.ioloop
 
@@ -25,7 +27,7 @@ class LastHandler(tornado.web.RequestHandler):
             avg_list.append([int(interval[0].time) + (60 * 60 * config.timezone), sum(interval_co2) // len(interval_co2)])
             min_max_list.append([int(interval[0].time) + (60 * 60 * config.timezone), min(interval_co2), max(interval_co2)])
 
-        await self.render("html/index.html", title="My title",
+        await self.render("index.html", title="My title",
                           data=data[-1],
                           old_data=data[-1:-21:-1],  # данные для графика
                           averages=avg_list,
@@ -36,11 +38,14 @@ class LastHandler(tornado.web.RequestHandler):
 def run():
     DataStorage.init(config.storage_size)  # TODO check init
 
-    application = tornado.web.Application([
-        (r"/sensors", SensorDataHandler),
-        (r"/", LastHandler),
-    ])
-    application.listen(config.listen_port)
+    app = tornado.web.Application(
+        handlers=[
+            (r"/sensors", SensorDataHandler),
+            (r"/", LastHandler),
+        ],
+        static_path=os.path.join(os.path.dirname(__file__), "html", "static"),
+        template_path=os.path.join(os.path.dirname(__file__), "html", "templates"))
+    app.listen(config.listen_port)
     tornado.ioloop.IOLoop.current().start()
 
 
