@@ -19,7 +19,7 @@ class LastHandler(tornado.web.RequestHandler):
         data = DataStorage.get_data()
         avg_list = []
         min_max_list = []
-        for interval in splitlist(data, 10):
+        for interval in splitlist(data, 6 * 15):  # интервалы по 15 минут
             interval_co2 = [int(i.co2) for i in interval]
 
             avg_list.append([int(interval[0].time) + (60 * 60 * config.timezone), sum(interval_co2) // len(interval_co2)])
@@ -27,7 +27,7 @@ class LastHandler(tornado.web.RequestHandler):
 
         await self.render("html/index.html", title="My title",
                           data=data[-1],
-                          old_data=data[-1::-1],  # данные для графика
+                          old_data=data[-1:-21:-1],  # данные для графика
                           averages=avg_list,
                           ranges=min_max_list
                           )
