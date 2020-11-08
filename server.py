@@ -18,14 +18,14 @@ class SensorDataHandler(tornado.web.RequestHandler):
 # noinspection PyAbstractClass
 class LastHandler(tornado.web.RequestHandler):
     async def get(self):
-        data = DataStorage.get_data(-Config.storage_size)  # получаем N последних показаний
+        data = DataStorage.get_data(-conf.storage_size)  # получаем N последних показаний
         co2_avg_list = []
         co2_min_max_list = []
         for interval in splitlist(data, 6 * 15):  # интервалы по 15 минут
             interval_co2 = [int(i.co2) for i in interval]
 
-            co2_avg_list.append([int(interval[len(interval) // 2].time) + (60 * 60 * config.timezone), sum(interval_co2) // len(interval_co2)])
-            co2_min_max_list.append([int(interval[len(interval) // 2].time) + (60 * 60 * config.timezone), min(interval_co2), max(interval_co2)])
+            co2_avg_list.append([int(interval[len(interval) // 2].time) + (60 * 60 * conf.timezone), sum(interval_co2) // len(interval_co2)])
+            co2_min_max_list.append([int(interval[len(interval) // 2].time) + (60 * 60 * conf.timezone), min(interval_co2), max(interval_co2)])
 
         await self.render("index.html", title="My title",
                           data=data[-1],
@@ -36,7 +36,7 @@ class LastHandler(tornado.web.RequestHandler):
 
 
 def run():
-    DataStorage.init(config.storage_size)  # TODO check init
+    DataStorage.init(conf.storage_size)  # TODO check init
 
     app = tornado.web.Application(
         handlers=[
@@ -45,10 +45,10 @@ def run():
         ],
         static_path=os.path.join(os.path.dirname(__file__), "html", "static"),
         template_path=os.path.join(os.path.dirname(__file__), "html", "templates"))
-    app.listen(config.listen_port)
+    app.listen(conf.listen_port)
     tornado.ioloop.IOLoop.current().start()
 
 
 if __name__ == "__main__":
-    config = Config()
+    conf = Config()
     run()
