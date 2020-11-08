@@ -1,14 +1,22 @@
-import time
-
+from datetime import datetime as dt
 from typing import List
 
 from utils import Deque
 from database import Database
 
 
+class ReadDataException(Exception):
+    pass
+
+
 class SensorsData:
     def __init__(self, payload: str):
-        self.time, self.co2, self.temp, self.hum, self.press = payload.split(";")
+        try:
+            self.time, self.co2, self.temp, self.hum, self.press = payload.split(";")
+        except Exception as e:
+            print(dt.isoformat(dt.now()), e)
+            raise ReadDataException
+
 
 
 class DataStorage:
@@ -33,7 +41,7 @@ class DataStorage:
         """
         to_db = []
         for data in data_list:
-            data = f'{int(time.time())};{data}'
+            data = f'{int(dt.timestamp(dt.now()))};{data}'
             cls._storage.append(SensorsData(data))
             to_db.append(data)
         Database.writelines(to_db)
