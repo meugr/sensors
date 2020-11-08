@@ -12,26 +12,26 @@ from utils import splitlist
 class SensorDataHandler(tornado.web.RequestHandler):
     async def post(self):
         content: list = self.request.body.decode().split('\n')
-        await DataStorage.add_data(content)
+        DataStorage.add_data(content)
 
 
 # noinspection PyAbstractClass
 class LastHandler(tornado.web.RequestHandler):
     async def get(self):
-        data = DataStorage.get_data()
-        avg_list = []
-        min_max_list = []
+        data = DataStorage.get_data(-Config.storage_size)  # получаем N последних показаний
+        co2_avg_list = []
+        co2_min_max_list = []
         for interval in splitlist(data, 6 * 15):  # интервалы по 15 минут
             interval_co2 = [int(i.co2) for i in interval]
 
-            avg_list.append([int(interval[len(interval) // 2].time) + (60 * 60 * config.timezone), sum(interval_co2) // len(interval_co2)])
-            min_max_list.append([int(interval[len(interval) // 2].time) + (60 * 60 * config.timezone), min(interval_co2), max(interval_co2)])
+            co2_avg_list.append([int(interval[len(interval) // 2].time) + (60 * 60 * config.timezone), sum(interval_co2) // len(interval_co2)])
+            co2_min_max_list.append([int(interval[len(interval) // 2].time) + (60 * 60 * config.timezone), min(interval_co2), max(interval_co2)])
 
         await self.render("index.html", title="My title",
                           data=data[-1],
-                          old_data=data[-1:-21:-1],  # данные для графика
-                          averages=avg_list,
-                          ranges=min_max_list
+                          old_data=data[-1:-21:-1],  # данные для таблички
+                          averages=co2_avg_list,
+                          ranges=co2_min_max_list
                           )
 
 
