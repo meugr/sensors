@@ -4,19 +4,19 @@
 <table>
     <tr>
         <td>CO2, ppm</td>
-        <td>{{ data.co2 }}</td>
+        <td>{{ last.co2 }}</td>
     </tr>
     <tr>
         <td>T, C</td>
-        <td>{{ data.temp }}</td>
+        <td>{{ last.temp }}</td>
     </tr>
     <tr>
         <td>H2O, %</td>
-        <td>{{ data.hum }}</td>
+        <td>{{ last.hum }}</td>
     </tr>
     <tr>
         <td>P, mm</td>
-        <td>{{ data.press }}</td>
+        <td>{{ last.press }}</td>
     </tr>
 </table>
 <br>
@@ -47,23 +47,37 @@
 <!--<script src="https://code.highcharts.com/modules/accessibility.js"></script>-->
 
 <figure class="highcharts-figure">
-  <div id="container"></div>
+  <div id="co2_container"></div>
+</figure>
+
+<figure class="highcharts-figure">
+  <div id="hum_container"></div>
 </figure>
 
 <script type="text/javascript">
-var ranges = [
-    {% for i in ranges%}
+var co2_ranges = [
+    {% for i in co2_ranges%}
     [{{i[0]}}000, {{i[1]}}, {{i[2]}}],
     {% end %}
   ],
-  averages = [
-    {% for i in averages%}
+  co2_averages = [
+    {% for i in co2_averages%}
+    [{{i[0]}}000, {{i[1]}}],
+    {% end %}
+  ],
+  hum_ranges = [
+      {% for i in hum_ranges%}
+    [{{i[0]}}000, {{i[1]}}, {{i[2]}}],
+    {% end %}
+  ],
+  hum_averages = [
+    {% for i in hum_averages%}
     [{{i[0]}}000, {{i[1]}}],
     {% end %}
   ];
 
 
-Highcharts.chart('container', {
+Highcharts.chart('co2_container', {
 
   title: {
     text: 'CO2 concentration'
@@ -87,7 +101,7 @@ Highcharts.chart('container', {
 
   series: [{
     name: 'CO2',
-    data: averages,
+    data: co2_averages,
     color: Highcharts.getOptions().colors[3],
     zIndex: 1,
     marker: {
@@ -95,11 +109,56 @@ Highcharts.chart('container', {
     }
   }, {
     name: 'Range',
-    data: ranges,
+    data: co2_ranges,
     type: 'arearange',
     lineWidth: 0,
     linkedTo: ':previous',
     color: Highcharts.getOptions().colors[3],
+    fillOpacity: 0.3,
+    zIndex: 0,
+    marker: {
+      enabled: false
+    }
+  }]
+});
+
+Highcharts.chart('hum_container', {
+
+  title: {
+    text: 'H2O concentration'
+  },
+
+  xAxis: {
+    type: 'datetime',
+  },
+
+  yAxis: {
+    title: {
+      text: 'ppm'
+    }
+  },
+
+  tooltip: {
+    crosshairs: true,
+    shared: true,
+    valueSuffix: '%'
+  },
+
+  series: [{
+    name: 'H2O',
+    data: hum_averages,
+    color: Highcharts.getOptions().colors[1],
+    zIndex: 1,
+    marker: {
+      enabled: false
+    }
+  }, {
+    name: 'Range',
+    data: hum_ranges,
+    type: 'arearange',
+    lineWidth: 0,
+    linkedTo: ':previous',
+    color: Highcharts.getOptions().colors[1],
     fillOpacity: 0.3,
     zIndex: 0,
     marker: {

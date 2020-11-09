@@ -19,20 +19,30 @@ class SensorDataHandler(tornado.web.RequestHandler):
 class LastHandler(tornado.web.RequestHandler):
     async def get(self):
         data = DataStorage.get_data(-conf.storage_size)  # получаем N последних показаний
-        co2_avg_list = []
-        co2_min_max_list = []
+        payload ={
+            'last': data[-1],
+            'old_data': data[-1:-21:-1],  # данные для таблички
+            'co2_averages': list(),
+            'co2_ranges': list(),
+            'hum_averages': list(),
+            'hum_ranges': list()
+        }
+
         for interval in splitlist(data, 6 * 15):  # интервалы по 15 минут
-            interval_co2 = [int(i.co2) for i in interval]
+            interval_co2 = []
+            interval_hum = []
+            for i in interval:
+                interval_co2.append(i.co2)
+                interval_hum.append(i.hum)
 
-            co2_avg_list.append([int(interval[len(interval) // 2].time) + (60 * 60 * conf.timezone), sum(interval_co2) // len(interval_co2)])
-            co2_min_max_list.append([int(interval[len(interval) // 2].time) + (60 * 60 * conf.timezone), min(interval_co2), max(interval_co2)])
+            payload['co2_averages'].append([int(interval[len(interval) // 2].time) + (60 * 60 * conf.timezone), sum(interval_co2) // len(interval_co2)])
+            payload['co2_ranges'].append([int(interval[len(interval) // 2].time) + (60 * 60 * conf.timezone), min(interval_co2), max(interval_co2)])
 
-        await self.render("index.html", title="My title",
-                          data=data[-1],
-                          old_data=data[-1:-21:-1],  # данные для таблички
-                          averages=co2_avg_list,
-                          ranges=co2_min_max_list
-                          )
+            payload['hum_averages'].append([int(interval[len(interval) // 2].time) + (60 * 60 * conf.timezone), sum(interval_hum) // len(interval_hum)])
+            payload['hum_ranges'].append([int(interval[len(interval) // 2].time) + (60 * 60 * conf.timezone), min(interval_hum), max(interval_hum)])
+
+
+        await self.render("index.html", title="My title", **payload)
 
 
 def run():

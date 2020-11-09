@@ -12,7 +12,12 @@ class ReadDataException(Exception):
 class SensorsData:
     def __init__(self, payload: str):
         try:
-            self.time, self.co2, self.temp, self.hum, self.press = payload.split(";")
+            time, co2, temp, hum, press = payload.strip('\n').split(";")
+            self.time: int = int(time)
+            self.co2: int = int(co2)
+            self.temp: float = float(temp)
+            self.hum: float = float(hum)
+            self.press: float = float(press)
         except Exception as e:
             print(dt.isoformat(dt.now()), e)
             raise ReadDataException
