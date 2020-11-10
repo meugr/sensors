@@ -38,7 +38,7 @@ class LastHandler(tornado.web.RequestHandler):
             payload['co2_averages'].append([int(interval[len(interval) // 2].time) + (60 * 60 * conf.timezone), sum(interval_co2) // len(interval_co2)])
             payload['co2_ranges'].append([int(interval[len(interval) // 2].time) + (60 * 60 * conf.timezone), min(interval_co2), max(interval_co2)])
 
-            payload['hum_averages'].append([int(interval[len(interval) // 2].time) + (60 * 60 * conf.timezone), sum(interval_hum) // len(interval_hum)])
+            payload['hum_averages'].append([int(interval[len(interval) // 2].time) + (60 * 60 * conf.timezone), sum(interval_hum) / len(interval_hum)])
             payload['hum_ranges'].append([int(interval[len(interval) // 2].time) + (60 * 60 * conf.timezone), min(interval_hum), max(interval_hum)])
 
 
