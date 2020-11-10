@@ -51,7 +51,11 @@
 </figure>
 
 <figure class="highcharts-figure">
-  <div id="hum_container"></div>
+    <div id="temp_container"></div>
+</figure>
+
+<figure class="highcharts-figure">
+    <div id="hum_container"></div>
 </figure>
 
 <script type="text/javascript">
@@ -66,12 +70,22 @@ var co2_ranges = [
     {% end %}
   ],
   hum_ranges = [
-      {% for i in hum_ranges%}
+    {% for i in hum_ranges%}
     [{{i[0]}}000, {{i[1]}}, {{i[2]}}],
     {% end %}
   ],
   hum_averages = [
     {% for i in hum_averages%}
+    [{{i[0]}}000, {{i[1]}}],
+    {% end %}
+   ],
+  temp_ranges = [
+    {% for i in temp_ranges%}
+    [{{i[0]}}000, {{i[1]}}, {{i[2]}}],
+    {% end %}
+  ],
+  temp_averages = [
+    {% for i in temp_averages%}
     [{{i[0]}}000, {{i[1]}}],
     {% end %}
   ];
@@ -88,6 +102,8 @@ Highcharts.chart('co2_container', {
   },
 
   yAxis: {
+    min: 400,
+    max: 1800,
     title: {
       text: 'ppm'
     }
@@ -102,7 +118,7 @@ Highcharts.chart('co2_container', {
   series: [{
     name: 'CO2',
     data: co2_averages,
-    color: Highcharts.getOptions().colors[3],
+    color: '#27F293',
     zIndex: 1,
     marker: {
       enabled: false
@@ -113,7 +129,7 @@ Highcharts.chart('co2_container', {
     type: 'arearange',
     lineWidth: 0,
     linkedTo: ':previous',
-    color: Highcharts.getOptions().colors[3],
+    color: '#27F293',
     fillOpacity: 0.3,
     zIndex: 0,
     marker: {
@@ -133,6 +149,8 @@ Highcharts.chart('hum_container', {
   },
 
   yAxis: {
+    min: 10,
+    max: 80,
     title: {
       text: '%'
     }
@@ -147,7 +165,7 @@ Highcharts.chart('hum_container', {
   series: [{
     name: 'H2O',
     data: hum_averages,
-    color: Highcharts.getOptions().colors[1],
+    color: '#1DB6F2',
     zIndex: 1,
     marker: {
       enabled: false
@@ -158,7 +176,54 @@ Highcharts.chart('hum_container', {
     type: 'arearange',
     lineWidth: 0,
     linkedTo: ':previous',
-    color: Highcharts.getOptions().colors[1],
+    color: '#1DB6F2',
+    fillOpacity: 0.3,
+    zIndex: 0,
+    marker: {
+      enabled: false
+    }
+  }]
+});
+
+Highcharts.chart('temp_container', {
+
+  title: {
+    text: 'Temperature'
+  },
+
+  xAxis: {
+    type: 'datetime',
+  },
+
+  yAxis: {
+    min: 20,
+    max: 32,
+    title: {
+      text: '°C'
+    }
+  },
+
+  tooltip: {
+    crosshairs: true,
+    shared: true,
+    valueSuffix: '°C'
+  },
+
+  series: [{
+    name: 'Temp',
+    data: temp_averages,
+    color: '#F2B705',
+    zIndex: 1,
+    marker: {
+      enabled: false
+    }
+  }, {
+    name: 'Range',
+    data: temp_ranges,
+    type: 'arearange',
+    lineWidth: 0,
+    linkedTo: ':previous',
+    color: '#F2B705',
     fillOpacity: 0.3,
     zIndex: 0,
     marker: {
