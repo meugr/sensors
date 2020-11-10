@@ -19,15 +19,12 @@ class SensorDataHandler(tornado.web.RequestHandler):
 class LastHandler(tornado.web.RequestHandler):
     async def get(self):
         data = DataStorage.get_data(-conf.storage_size)  # получаем N последних показаний
-        payload ={
+        payload = {
             'last': data[-1],
             'old_data': data[-1:-21:-1],  # данные для таблички
             'co2_averages': list(),
-            'co2_ranges': list(),
             'hum_averages': list(),
-            'hum_ranges': list(),
-            'temp_averages': list(),
-            'temp_ranges': list()
+            'temp_averages': list()
         }
 
         for interval in splitlist(data, 6 * 15):  # интервалы по 15 минут
@@ -40,14 +37,8 @@ class LastHandler(tornado.web.RequestHandler):
                 interval_temp.append(i.temp)
 
             payload['co2_averages'].append([int(interval[len(interval) // 2].time) + (60 * 60 * conf.timezone), sum(interval_co2) // len(interval_co2)])
-            payload['co2_ranges'].append([int(interval[len(interval) // 2].time) + (60 * 60 * conf.timezone), min(interval_co2), max(interval_co2)])
-
             payload['hum_averages'].append([int(interval[len(interval) // 2].time) + (60 * 60 * conf.timezone), f"{sum(interval_hum) / len(interval_hum):.2f}"])
-            payload['hum_ranges'].append([int(interval[len(interval) // 2].time) + (60 * 60 * conf.timezone), min(interval_hum), max(interval_hum)])
-
             payload['temp_averages'].append([int(interval[len(interval) // 2].time) + (60 * 60 * conf.timezone), f"{sum(interval_temp) / len(interval_temp):.2f}"])
-            payload['temp_ranges'].append([int(interval[len(interval) // 2].time) + (60 * 60 * conf.timezone), min(interval_temp), max(interval_temp)])
-
 
         await self.render("index.html", title="My title", **payload)
 

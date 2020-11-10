@@ -47,31 +47,13 @@
 <!--<script src="https://code.highcharts.com/modules/accessibility.js"></script>-->
 
 <figure class="highcharts-figure">
-  <div id="co2_container"></div>
-</figure>
-
-<figure class="highcharts-figure">
-    <div id="temp_container"></div>
-</figure>
-
-<figure class="highcharts-figure">
-    <div id="hum_container"></div>
+    <div id="container"></div>
 </figure>
 
 <script type="text/javascript">
-var co2_ranges = [
-    {% for i in co2_ranges%}
-    [{{i[0]}}000, {{i[1]}}, {{i[2]}}],
-    {% end %}
-  ],
-  co2_averages = [
+var co2_averages = [
     {% for i in co2_averages%}
     [{{i[0]}}000, {{i[1]}}],
-    {% end %}
-  ],
-  hum_ranges = [
-    {% for i in hum_ranges%}
-    [{{i[0]}}000, {{i[1]}}, {{i[2]}}],
     {% end %}
   ],
   hum_averages = [
@@ -79,156 +61,101 @@ var co2_ranges = [
     [{{i[0]}}000, {{i[1]}}],
     {% end %}
    ],
-  temp_ranges = [
-    {% for i in temp_ranges%}
-    [{{i[0]}}000, {{i[1]}}, {{i[2]}}],
-    {% end %}
-  ],
   temp_averages = [
     {% for i in temp_averages%}
     [{{i[0]}}000, {{i[1]}}],
     {% end %}
   ];
 
-
-Highcharts.chart('co2_container', {
-
-  title: {
-    text: 'CO2 concentration'
-  },
-
-  xAxis: {
-    type: 'datetime',
-  },
-
-  yAxis: {
-    min: 400,
-    max: 1800,
+Highcharts.chart('container', {
+    chart: {
+        zoomType: 'x'
+    },
     title: {
-      text: 'ppm'
-    }
-  },
+        text: 'Room microclimate'
+    },
+    xAxis: {
+        type: 'datetime'
+    },
+    yAxis: [{
+        min: 18,
+        max: 32,
+        labels: {
+            format: '{value}°C',
+            style: {
+                color: '#F2B705'
+            }
+        },
+        title: {
+            text: 'Temperature',
+            style: {
+                color: '#F2B705'
+            }
+        },
+        opposite: true
 
-  tooltip: {
-    crosshairs: true,
-    shared: true,
-    valueSuffix: 'ppm'
-  },
+    }, {
+        min: 400,
+        max: 1800,
+        title: {
+            text: 'CO2',
+            style: {
+                color: '#27F293'
+            }
+        },
+        labels: {
+            format: '{value} ppm',
+            style: {
+                color: '#27F293'
+            }
+        }
 
-  series: [{
-    name: 'CO2',
-    data: co2_averages,
-    color: '#27F293',
-    zIndex: 1,
-    marker: {
-      enabled: false
-    }
-  }, {
-    name: 'Range',
-    data: co2_ranges,
-    type: 'arearange',
-    lineWidth: 0,
-    linkedTo: ':previous',
-    color: '#27F293',
-    fillOpacity: 0.3,
-    zIndex: 0,
-    marker: {
-      enabled: false
-    }
-  }]
-});
-
-Highcharts.chart('hum_container', {
-
-  title: {
-    text: 'H2O concentration'
-  },
-
-  xAxis: {
-    type: 'datetime',
-  },
-
-  yAxis: {
-    min: 10,
-    max: 80,
-    title: {
-      text: '%'
-    }
-  },
-
-  tooltip: {
-    crosshairs: true,
-    shared: true,
-    valueSuffix: '%'
-  },
-
-  series: [{
-    name: 'H2O',
-    data: hum_averages,
-    color: '#1DB6F2',
-    zIndex: 1,
-    marker: {
-      enabled: false
-    }
-  }, {
-    name: 'Range',
-    data: hum_ranges,
-    type: 'arearange',
-    lineWidth: 0,
-    linkedTo: ':previous',
-    color: '#1DB6F2',
-    fillOpacity: 0.3,
-    zIndex: 0,
-    marker: {
-      enabled: false
-    }
-  }]
-});
-
-Highcharts.chart('temp_container', {
-
-  title: {
-    text: 'Temperature'
-  },
-
-  xAxis: {
-    type: 'datetime',
-  },
-
-  yAxis: {
-    min: 20,
-    max: 32,
-    title: {
-      text: '°C'
-    }
-  },
-
-  tooltip: {
-    crosshairs: true,
-    shared: true,
-    valueSuffix: '°C'
-  },
-
-  series: [{
+    }, {
+        min: 10,
+        max: 80,
+        title: {
+            text: 'H2O',
+            style: {
+                color: '#1DB6F2'
+            }
+        },
+        labels: {
+            format: '{value} %',
+            style: {
+                color: '#1DB6F2'
+            }
+        },
+        opposite: true
+    }],
+    tooltip: {
+        shared: true
+    },
+    series: [{
     name: 'Temp',
     data: temp_averages,
+    yAxis: 0,
     color: '#F2B705',
     zIndex: 1,
     marker: {
       enabled: false
     }
   }, {
-    name: 'Range',
-    data: temp_ranges,
-    type: 'arearange',
-    lineWidth: 0,
-    linkedTo: ':previous',
-    color: '#F2B705',
-    fillOpacity: 0.3,
-    zIndex: 0,
+        name: 'CO2',
+    data: co2_averages,
+    yAxis: 1,
+    color: '#27F293',
+    zIndex: 1,
     marker: {
       enabled: false
     }
-  }]
-});
+  }, {
+    name: 'H2O',
+    data: hum_averages,
+    yAxis: 2,
+    color: '#1DB6F2',
+    zIndex: 1,
+    marker: {
+      enabled: false
+    }
+  }]});
 </script>

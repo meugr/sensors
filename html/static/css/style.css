@@ -1,4 +1,4 @@
-#co2_container, #hum_container, #temp_container {
+#container {
   height: 600px;
   max-width: 1000px;
 }
