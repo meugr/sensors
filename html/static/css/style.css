@@ -8,6 +8,11 @@
   margin: 1em auto;
 }
 
+.highcharts-axis-title {
+  font-weight: 600;
+  font-size: 15;
+}
+
 .highcharts-data-table table {
   font-family: Verdana, sans-serif;
   border-collapse: collapse;
