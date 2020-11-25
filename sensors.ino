@@ -23,6 +23,10 @@ void setup() {
   z19Serial.begin(Z19_SERIAL_BAUD);
   Wire.begin();
   bme.begin();
+
+  // connect to WIFI
+  //espSerial.println("AT+CWJAP_DEF=\"SSID\",\"PASSWORD\"");
+
   //z19Serial.write(z19_off_abc, 9); uncomment for disable autocalibrate
 }
 
