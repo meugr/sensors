@@ -21,6 +21,17 @@
 </table>
 <br>
 <br>
+
+<script src="{{ static_url('js/highcharts/highcharts.js') }}"></script>
+<script src="{{ static_url('js/highcharts/highcharts-more.js') }}"></script>
+<script src="{{ static_url('js/highcharts/exporting.js') }}"></script>
+<script src="{{ static_url('js/highcharts/export-data.js') }}"></script>
+<!--<script src="https://code.highcharts.com/modules/accessibility.js"></script>-->
+
+<figure class="highcharts-figure">
+    <div id="container"></div>
+</figure>
+
 <table border="1" cellpadding="5">
     <tr>
         <td>CO2, ppm</td>
@@ -37,18 +48,6 @@
     </tr>
     {% end %}
 </table>
-
-
-<script src="{{ static_url('js/highcharts/highcharts.js') }}"></script>
-<script src="{{ static_url('js/highcharts/highcharts-more.js') }}"></script>
-<script src="{{ static_url('js/highcharts/exporting.js') }}"></script>
-<script src="{{ static_url('js/highcharts/export-data.js') }}"></script>
-
-<!--<script src="https://code.highcharts.com/modules/accessibility.js"></script>-->
-
-<figure class="highcharts-figure">
-    <div id="container"></div>
-</figure>
 
 <script type="text/javascript">
 var co2_averages = [
@@ -78,8 +77,8 @@ Highcharts.chart('container', {
         type: 'datetime'
     },
     yAxis: [{
-        min: 18,
-        max: 32,
+        min: 10,
+        max: 40,
         labels: {
             format: '{value}°C',
             style: {
@@ -97,7 +96,7 @@ Highcharts.chart('container', {
 
     }, {
         min: 400,
-        max: 1800,
+        max: 2400,
         title: {
             text: 'CO2',
             style: {
@@ -113,7 +112,7 @@ Highcharts.chart('container', {
         }
 
     }, {
-        min: 10,
+        min: 0,
         max: 80,
         title: {
             text: 'H2O',
