@@ -18,10 +18,9 @@ class SensorsData:
             self.temp: float = float(temp)
             self.hum: float = float(hum)
             self.press: float = float(press)
-        except Exception as e:
-            print(dt.isoformat(dt.now()), e)
-            raise ReadDataException
-
+        except ValueError as e:
+            # print(dt.isoformat(dt.now()), e)
+            raise ReadDataException(f'Payload incorrect: "{payload}"')
 
 
 class DataStorage:
@@ -36,7 +35,7 @@ class DataStorage:
     def init(cls, size):
         cls._storage: Deque = Deque([], maxlen=size)
 
-        for data in Database.readlines(size):
+        for data in Database.tail(size):
             cls._storage.append(SensorsData(data))
 
     @classmethod
