@@ -13,7 +13,6 @@ class Database:
     def tail(cls, size) -> List[str]:
         """
         Return a list last elements from DB
-        TODO игнорировать пустые строки
         """
         with open(config.csv_file) as f:
             return [i for i in f.readlines()[-size:] if i]
