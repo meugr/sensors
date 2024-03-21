@@ -16,11 +16,9 @@ class Database:
         TODO игнорировать пустые строки
         """
         with open(config.csv_file) as f:
-            return f.readlines()[-size:]
+            return [i for i in f.readlines()[-size:] if i]
 
     @classmethod
     def writelines(cls, lines: List[str]):
         with open(config.csv_file, 'a') as f:
-            # TODO иногда пишем лишний \n, который ломает SensorsData.__init__()
-            # попробовать '\n'.join(lines) + '\n'
-            f.writelines(map(lambda line: '\n' + line, lines))
+            f.write('\n'.join(lines) + '\n')
