@@ -36,7 +36,10 @@ class DataStorage:
         cls._storage: Deque = Deque([], maxlen=size)
 
         for data in Database.tail(size):
-            cls._storage.append(SensorsData(data))
+            try:
+                cls._storage.append(SensorsData(data))
+            except ReadDataException:
+                continue
 
     @classmethod
     def add_data(cls, data_list: list):
@@ -56,4 +59,4 @@ class DataStorage:
         Возвращаем данные в интервале [start:end]
         Последнее значение - get_data(-1)
         """
-        return cls._storage.get()[start: end]  # TODO обрабатывать IndexError
+        return cls._storage.get()[start: end]
